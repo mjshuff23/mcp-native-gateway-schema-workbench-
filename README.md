@@ -52,3 +52,20 @@ Use PostgreSQL as the canonical store, add `pgvector` only inside the same Postg
 - The gateway opens upstream MCP sessions lazily from a capability snapshot registry.
 - The LLM proposes command DSL mutations; users approve diffs before files or external systems change.
 - Provider refresh tokens never enter model context or extension runtimes.
+
+## Phase 1 Local Commands
+
+```bash
+pnpm install
+cp .env.example .env
+docker compose up -d postgres redis
+pnpm db:migrate
+pnpm verify
+pnpm --filter @workbench/gateway dev
+```
+
+Gateway health check:
+
+```bash
+curl http://localhost:4200/healthz
+```

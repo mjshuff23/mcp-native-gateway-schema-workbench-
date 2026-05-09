@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "ignoreDeprecations": "6.0",
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@workbench/agent-runtime": ["packages/agent-runtime/src/index.ts"],
+      "@workbench/auth": ["packages/auth/src/index.ts"],
+      "@workbench/config": ["packages/config/src/index.ts"],
+      "@workbench/connector-sdk": ["packages/connector-sdk/src/index.ts"],
+      "@workbench/domain-graph": ["packages/domain-graph/src/index.ts"],
+      "@workbench/persistence": ["packages/persistence/src/index.ts"],
+      "@workbench/ui-schema": ["packages/ui-schema/src/index.ts"]
+    }
+  }
+}
