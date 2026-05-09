@@ -83,6 +83,9 @@ importers:
 
   packages/persistence:
     dependencies:
+      '@workbench/auth':
+        specifier: workspace:*
+        version: link:../auth
       '@workbench/config':
         specifier: workspace:*
         version: link:../config
