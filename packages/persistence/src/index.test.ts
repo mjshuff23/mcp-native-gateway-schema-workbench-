@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { persistencePackage } from './index';
+import { createDatabase, workspaces } from './index';
 
 describe('persistence package', () => {
-  it('exports a package marker', () => {
-    expect(persistencePackage).toBe('persistence');
+  it('exports the database client and schema', () => {
+    expect(typeof createDatabase).toBe('function');
+    expect(workspaces).toBeDefined();
   });
 });

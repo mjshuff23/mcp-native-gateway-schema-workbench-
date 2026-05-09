@@ -6,6 +6,9 @@
   "packageManager": "pnpm@10.9.0",
   "scripts": {
     "build": "nx run-many -t build",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
     "dev": "nx run-many -t dev --parallel=4",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -18,6 +21,7 @@
     "@eslint/js": "latest",
     "@types/node": "latest",
     "@vitejs/plugin-react": "latest",
+    "drizzle-kit": "^0.31.10",
     "eslint": "latest",
     "nx": "latest",
     "prettier": "latest",
