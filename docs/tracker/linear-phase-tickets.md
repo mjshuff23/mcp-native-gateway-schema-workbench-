@@ -61,7 +61,7 @@ Scope:
 - Canonical schema graph IR.
 - Snapshot and diff model.
 - Validation findings model.
-- GitHub App connector design and first implementation stub.
+- GitHub App connector design and first implementation shell.
 - Repo file scanner.
 - Prisma parser adapter.
 - SQL migration parser adapter.
@@ -189,3 +189,29 @@ Created Linear phase issues:
 - TSH-68 Phase 5: https://linear.app/michaelshuff/issue/TSH-68/phase-5-freeform-design-3d-exploration-and-scale-hardening
 
 Note: Linear's natural-language research endpoint and document creation endpoint were unavailable in this session, but direct project and issue creation worked.
+
+## Phase 1 Development Breakdown
+
+Status as of 2026-05-09:
+
+- Active branch: `tsh-64-phase-1-foundation-contracts`
+- GitHub phase issue: https://github.com/mjshuff23/mcp-native-gateway-schema-workbench-/issues/1
+- Linear parent issue: `TSH-64` moved to `In Progress`
+- Linear project status: `In Progress`
+- Agent plan: `docs/superpowers/plans/2026-05-09-phase-1-foundation-implementation.md`
+
+Phase 1 child tickets:
+
+- TSH-69 Phase 1A: Scaffold pnpm/Nx workspace and root tooling - https://linear.app/michaelshuff/issue/TSH-69/phase-1a-scaffold-pnpmnx-workspace-and-root-tooling
+- TSH-70 Phase 1B: Create app and package skeletons - https://linear.app/michaelshuff/issue/TSH-70/phase-1b-create-app-and-package-skeletons
+- TSH-71 Phase 1C: Add local Postgres, Redis, and environment contract - https://linear.app/michaelshuff/issue/TSH-71/phase-1c-add-local-postgres-redis-and-environment-contract
+- TSH-72 Phase 1D: Create foundation database schema and migrations - https://linear.app/michaelshuff/issue/TSH-72/phase-1d-create-foundation-database-schema-and-migrations
+- TSH-73 Phase 1E: Implement auth, connection vault, and delegation domain primitives - https://linear.app/michaelshuff/issue/TSH-73/phase-1e-implement-auth-connection-vault-and-delegation-domain
+- TSH-74 Phase 1F: Implement policy engine MVP and audit write path - https://linear.app/michaelshuff/issue/TSH-74/phase-1f-implement-policy-engine-mvp-and-audit-write-path
+- TSH-75 Phase 1G: Implement MCP gateway health and capability registry shell - https://linear.app/michaelshuff/issue/TSH-75/phase-1g-implement-mcp-gateway-health-and-capability-registry-shell
+- TSH-76 Phase 1H: Wire verification, CI skeleton, and handoff docs - https://linear.app/michaelshuff/issue/TSH-76/phase-1h-wire-verification-ci-skeleton-and-handoff-docs
+
+Figma note:
+
+- Existing FigJam board remains the design surface: https://www.figma.com/board/2riHSM7ahz9OoHRTrq7zUE
+- Current Figma MCP inspection/update is blocked by the Starter-plan tool-call limit, so this breakdown was synced through GitHub, Linear, Notion, and repo docs instead.
