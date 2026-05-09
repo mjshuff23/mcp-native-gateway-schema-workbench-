@@ -49,4 +49,17 @@ describe('evaluatePolicy', () => {
       }).result,
     ).toBe('deny');
   });
+
+  it('bypasses all checks in permissive mode', () => {
+    expect(
+      evaluatePolicy({
+        actorType: 'agent',
+        action: 'delete_table',
+        riskLabels: ['destructive', 'credential_touching'],
+        requestedScopes: ['graph:write'],
+        grantedScopes: [],
+        mode: 'permissive',
+      }).result,
+    ).toBe('allow');
+  });
 });

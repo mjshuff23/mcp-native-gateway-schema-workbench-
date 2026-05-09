@@ -36,7 +36,7 @@ mcpServer.registerResource(
       {
         uri: uri.href,
         mimeType: 'application/json',
-        text: JSON.stringify(getGatewayStatus(registry), null, 2),
+        text: JSON.stringify(getGatewayStatus(registry, env), null, 2),
       },
     ],
   }),
@@ -45,7 +45,12 @@ mcpServer.registerResource(
 const app = express();
 
 app.get('/healthz', (_req, res) => {
-  res.json(getGatewayStatus(registry));
+  try {
+    res.json(getGatewayStatus(registry, env));
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'internal error';
+    res.status(500).json({ error: message });
+  }
 });
 
 app.listen(env.GATEWAY_PORT, () => {

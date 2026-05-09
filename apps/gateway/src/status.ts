@@ -1,6 +1,6 @@
 import { evaluatePolicy } from '@workbench/auth';
 import type { CapabilityRegistry } from '@workbench/connector-sdk';
-import { loadWorkbenchEnv } from '@workbench/config';
+import { type WorkbenchEnv, loadWorkbenchEnv } from '@workbench/config';
 
 export interface GatewayStatus {
   name: 'mcp-native-gateway-schema-workbench';
@@ -16,14 +16,17 @@ export interface GatewayStatus {
   };
 }
 
-export function getGatewayStatus(registry: CapabilityRegistry): GatewayStatus {
-  const env = loadWorkbenchEnv();
+export function getGatewayStatus(
+  registry: CapabilityRegistry,
+  env: WorkbenchEnv = loadWorkbenchEnv(),
+): GatewayStatus {
   const decision = evaluatePolicy({
     actorType: 'system',
     action: 'read_gateway_status',
     riskLabels: ['read_only'],
     requestedScopes: ['gateway:read'],
     grantedScopes: ['gateway:read'],
+    mode: env.POLICY_MODE,
   });
 
   if (decision.result !== 'allow') {

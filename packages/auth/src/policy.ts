@@ -19,9 +19,14 @@ export interface PolicyInput {
   riskLabels: RiskLabel[];
   requestedScopes: string[];
   grantedScopes: string[];
+  mode?: 'enforcing' | 'permissive';
 }
 
 export function evaluatePolicy(input: PolicyInput): PolicyDecision {
+  if (input.mode === 'permissive') {
+    return { result: 'allow', reason: 'Policy evaluation bypassed in permissive mode' };
+  }
+
   if (input.riskLabels.includes('credential_touching')) {
     return { result: 'deny', reason: 'Credential-touching actions are blocked in Phase 1' };
   }
