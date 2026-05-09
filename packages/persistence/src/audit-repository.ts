@@ -23,7 +23,8 @@ export interface AuditRepository {
 export class InMemoryAuditRepository implements AuditRepository {
   readonly events: AuditEventInput[] = [];
 
-  async record(event: AuditEventInput): Promise<void> {
+  record(event: AuditEventInput): Promise<void> {
     this.events.push(event);
+    return Promise.resolve();
   }
 }

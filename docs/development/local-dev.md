@@ -12,6 +12,7 @@
 pnpm install
 cp .env.example .env
 docker compose up -d postgres redis
+pnpm db:migrate
 pnpm verify
 ```
 
@@ -21,6 +22,12 @@ pnpm verify
 pnpm --filter @workbench/api dev
 pnpm --filter @workbench/gateway dev
 pnpm --filter @workbench/worker dev
+```
+
+Gateway health check:
+
+```bash
+curl http://localhost:4200/healthz
 ```
 
 ## Reset Local Data

@@ -31,7 +31,7 @@ mcpServer.registerResource(
     description: 'Current gateway health and capability counts',
     mimeType: 'application/json',
   },
-  async (uri) => ({
+  (uri) => ({
     contents: [
       {
         uri: uri.href,

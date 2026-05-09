@@ -12,16 +12,18 @@ export interface TokenVault {
 export class InMemoryTokenVault implements TokenVault {
   private readonly secrets = new Map<string, string>();
 
-  async putSecret(ref: TokenSecretRef, plaintext: string): Promise<void> {
+  putSecret(ref: TokenSecretRef, plaintext: string): Promise<void> {
     this.secrets.set(this.key(ref), plaintext);
+    return Promise.resolve();
   }
 
-  async getSecret(ref: TokenSecretRef): Promise<string | null> {
-    return this.secrets.get(this.key(ref)) ?? null;
+  getSecret(ref: TokenSecretRef): Promise<string | null> {
+    return Promise.resolve(this.secrets.get(this.key(ref)) ?? null);
   }
 
-  async deleteSecret(ref: TokenSecretRef): Promise<void> {
+  deleteSecret(ref: TokenSecretRef): Promise<void> {
     this.secrets.delete(this.key(ref));
+    return Promise.resolve();
   }
 
   private key(ref: TokenSecretRef): string {

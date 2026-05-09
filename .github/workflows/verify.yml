@@ -1,0 +1,55 @@
+name: Verify
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - tsh-64-phase-1-foundation-contracts
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: workbench
+          POSTGRES_PASSWORD: workbench
+          POSTGRES_DB: workbench_dev
+        ports:
+          - 15432:5432
+        options: >-
+          --health-cmd "pg_isready -U workbench -d workbench_dev"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 63799:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      API_PORT: 4100
+      GATEWAY_PORT: 4200
+      DATABASE_URL: postgres://workbench:workbench@localhost:15432/workbench_dev
+      REDIS_URL: redis://localhost:63799
+      POLICY_MODE: enforcing
+      WORKBENCH_VERSION: 0.1.0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.9.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:migrate
+      - run: pnpm verify
