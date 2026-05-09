@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { authPackage } from './index';
+import { createDelegationGrant, InMemoryTokenVault, setPrimaryIdentityProvider } from './index';
 
 describe('auth package', () => {
-  it('exports a package marker', () => {
-    expect(authPackage).toBe('auth');
+  it('exports auth primitives', () => {
+    expect(typeof createDelegationGrant).toBe('function');
+    expect(typeof setPrimaryIdentityProvider).toBe('function');
+    expect(new InMemoryTokenVault()).toBeInstanceOf(InMemoryTokenVault);
   });
 });
