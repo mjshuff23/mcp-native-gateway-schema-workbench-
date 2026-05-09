@@ -1,3 +1,5 @@
-const port = process.env.API_PORT ?? '4100';
+import { loadWorkbenchEnv } from '@workbench/config';
 
-console.log(`api shell ready on port ${port}`);
+const env = loadWorkbenchEnv();
+
+console.log(`api shell ready on port ${env.API_PORT}`);

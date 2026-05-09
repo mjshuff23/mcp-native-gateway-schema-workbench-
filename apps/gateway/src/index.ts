@@ -1,3 +1,5 @@
-const port = process.env.GATEWAY_PORT ?? '4200';
+import { loadWorkbenchEnv } from '@workbench/config';
 
-console.log(`gateway shell ready on port ${port}`);
+const env = loadWorkbenchEnv();
+
+console.log(`gateway shell ready on port ${env.GATEWAY_PORT}`);
