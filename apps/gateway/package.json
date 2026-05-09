@@ -11,7 +11,14 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@workbench/config": "workspace:*"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@workbench/auth": "workspace:*",
+    "@workbench/config": "workspace:*",
+    "@workbench/connector-sdk": "workspace:*",
+    "express": "^5.2.1",
+    "zod": "^4.4.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/express": "^5.0.6"
+  }
 }

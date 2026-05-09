@@ -1,7 +1,27 @@
+import { existsSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { config as loadDotenv } from 'dotenv';
 import { z } from 'zod';
 
-loadDotenv();
+function findDotenvPath(startDir = process.cwd()): string | undefined {
+  let currentDir = startDir;
+
+  while (true) {
+    const candidate = join(currentDir, '.env');
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+
+    const parentDir = dirname(currentDir);
+    if (parentDir === currentDir) {
+      return undefined;
+    }
+
+    currentDir = parentDir;
+  }
+}
+
+loadDotenv({ path: findDotenvPath() });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
