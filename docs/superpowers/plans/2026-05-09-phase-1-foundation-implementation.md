@@ -73,6 +73,7 @@ When one workspace package imports another, add the dependency explicitly with t
 ### Task 1: TSH-69 - Scaffold pnpm/Nx Workspace And Root Tooling
 
 **Files:**
+
 - Create: `package.json`
 - Create: `pnpm-workspace.yaml`
 - Create: `nx.json`
@@ -125,8 +126,8 @@ Create `pnpm-workspace.yaml`:
 
 ```yaml
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 ```
 
 - [ ] **Step 3: Create Nx config**
@@ -213,17 +214,17 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname
-      }
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     rules: {
       '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
-      '@typescript-eslint/no-floating-promises': 'error'
-    }
+      '@typescript-eslint/no-floating-promises': 'error',
+    },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', '.nx/**', 'coverage/**']
-  }
+    ignores: ['dist/**', 'node_modules/**', '.nx/**', 'coverage/**'],
+  },
 );
 ```
 
@@ -234,7 +235,7 @@ module.exports = {
   singleQuote: true,
   trailingComma: 'all',
   printWidth: 100,
-  semi: true
+  semi: true,
 };
 ```
 
@@ -285,6 +286,7 @@ git commit -m "chore: scaffold workspace tooling"
 ### Task 2: TSH-70 - Create App And Package Skeletons
 
 **Files:**
+
 - Create: `apps/api/*`
 - Create: `apps/gateway/*`
 - Create: `apps/worker/*`
@@ -372,8 +374,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.test.ts']
-  }
+    include: ['src/**/*.test.ts'],
+  },
 });
 ```
 
@@ -476,6 +478,7 @@ git commit -m "chore: add app and package skeletons"
 ### Task 3: TSH-71 - Add Local Postgres, Redis, And Environment Contract
 
 **Files:**
+
 - Create: `docker-compose.yml`
 - Create: `.env.example`
 - Create: `packages/config/src/env.ts`
@@ -507,11 +510,11 @@ services:
       POSTGRES_PASSWORD: workbench
       POSTGRES_DB: workbench_dev
     ports:
-      - "54329:5432"
+      - '54329:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U workbench -d workbench_dev"]
+      test: ['CMD-SHELL', 'pg_isready -U workbench -d workbench_dev']
       interval: 5s
       timeout: 5s
       retries: 10
@@ -520,9 +523,9 @@ services:
     image: redis:7-alpine
     container_name: mcp_schema_workbench_redis
     ports:
-      - "63799:6379"
+      - '63799:6379'
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 5s
       retries: 10
@@ -562,7 +565,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
   POLICY_MODE: z.enum(['enforcing', 'permissive']).default('enforcing'),
-  WORKBENCH_VERSION: z.string().default('0.1.0')
+  WORKBENCH_VERSION: z.string().default('0.1.0'),
 });
 
 export type WorkbenchEnv = z.infer<typeof envSchema>;
@@ -621,7 +624,7 @@ console.log(`worker shell ready with Redis at ${env.REDIS_URL}`);
 
 Create `docs/development/local-dev.md`:
 
-```md
+````md
 # Local Development
 
 ## Prerequisites
@@ -638,6 +641,7 @@ cp .env.example .env
 docker compose up -d postgres redis
 pnpm verify
 ```
+````
 
 ## Runtime Commands
 
@@ -653,7 +657,8 @@ pnpm --filter @workbench/worker dev
 docker compose down -v
 docker compose up -d postgres redis
 ```
-```
+
+````
 
 - [ ] **Step 7: Verify local dependencies**
 
@@ -664,7 +669,7 @@ cp .env.example .env
 docker compose up -d postgres redis
 pnpm typecheck
 pnpm test
-```
+````
 
 Expected: containers start and TypeScript/tests pass.
 
@@ -680,6 +685,7 @@ git commit -m "chore: add local runtime environment"
 ### Task 4: TSH-72 - Create Foundation Database Schema And Migrations
 
 **Files:**
+
 - Create: `drizzle.config.ts`
 - Create: `packages/persistence/src/schema.ts`
 - Create: `packages/persistence/src/client.ts`
@@ -709,8 +715,8 @@ export default defineConfig({
   out: './packages/persistence/migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? 'postgres://workbench:workbench@localhost:54329/workbench_dev'
-  }
+    url: process.env.DATABASE_URL ?? 'postgres://workbench:workbench@localhost:54329/workbench_dev',
+  },
 });
 ```
 
@@ -740,7 +746,7 @@ import {
   text,
   timestamp,
   uniqueIndex,
-  uuid
+  uuid,
 } from 'drizzle-orm/pg-core';
 
 export const providerEnum = pgEnum('provider', [
@@ -750,14 +756,14 @@ export const providerEnum = pgEnum('provider', [
   'notion',
   'linear',
   'local',
-  'database'
+  'database',
 ]);
 
 export const connectionStatusEnum = pgEnum('connection_status', [
   'active',
   'revoked',
   'expired',
-  'reauth_required'
+  'reauth_required',
 ]);
 
 export const policyResultEnum = pgEnum('policy_result', ['allow', 'deny', 'approval_required']);
@@ -765,132 +771,212 @@ export const policyResultEnum = pgEnum('policy_result', ['allow', 'deny', 'appro
 export const workspaces = pgTable('workspaces', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: text('name').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
-  displayName: text('display_name').notNull(),
-  primaryIdentityProvider: providerEnum('primary_identity_provider').notNull().default('local'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  workspaceIdx: index('users_workspace_idx').on(table.workspaceId)
-}));
+export const users = pgTable(
+  'users',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspaces.id),
+    displayName: text('display_name').notNull(),
+    primaryIdentityProvider: providerEnum('primary_identity_provider').notNull().default('local'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    workspaceIdx: index('users_workspace_idx').on(table.workspaceId),
+  }),
+);
 
-export const externalIdentities = pgTable('external_identities', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id),
-  provider: providerEnum('provider').notNull(),
-  providerSubjectId: text('provider_subject_id').notNull(),
-  email: text('email'),
-  isPrimaryLogin: boolean('is_primary_login').notNull().default(false),
-  linkedAt: timestamp('linked_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  providerSubjectUnique: uniqueIndex('external_identities_provider_subject_unique').on(table.provider, table.providerSubjectId),
-  userProviderIdx: index('external_identities_user_provider_idx').on(table.userId, table.provider)
-}));
+export const externalIdentities = pgTable(
+  'external_identities',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    provider: providerEnum('provider').notNull(),
+    providerSubjectId: text('provider_subject_id').notNull(),
+    email: text('email'),
+    isPrimaryLogin: boolean('is_primary_login').notNull().default(false),
+    linkedAt: timestamp('linked_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    providerSubjectUnique: uniqueIndex('external_identities_provider_subject_unique').on(
+      table.provider,
+      table.providerSubjectId,
+    ),
+    userProviderIdx: index('external_identities_user_provider_idx').on(
+      table.userId,
+      table.provider,
+    ),
+  }),
+);
 
-export const providerConnections = pgTable('provider_connections', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id),
-  provider: providerEnum('provider').notNull(),
-  connectionType: text('connection_type').notNull(),
-  scopes: jsonb('scopes').$type<string[]>().notNull().default([]),
-  status: connectionStatusEnum('status').notNull().default('active'),
-  encryptedRefreshToken: text('encrypted_refresh_token'),
-  encryptedAccessTokenCache: text('encrypted_access_token_cache'),
-  expiresAt: timestamp('expires_at', { withTimezone: true }),
-  revokedAt: timestamp('revoked_at', { withTimezone: true }),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  userProviderIdx: index('provider_connections_user_provider_idx').on(table.userId, table.provider)
-}));
+export const providerConnections = pgTable(
+  'provider_connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    provider: providerEnum('provider').notNull(),
+    connectionType: text('connection_type').notNull(),
+    scopes: jsonb('scopes').$type<string[]>().notNull().default([]),
+    status: connectionStatusEnum('status').notNull().default('active'),
+    encryptedRefreshToken: text('encrypted_refresh_token'),
+    encryptedAccessTokenCache: text('encrypted_access_token_cache'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    userProviderIdx: index('provider_connections_user_provider_idx').on(
+      table.userId,
+      table.provider,
+    ),
+  }),
+);
 
-export const clients = pgTable('clients', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id),
-  kind: text('kind').notNull(),
-  name: text('name').notNull(),
-  publicKey: text('public_key'),
-  lastSeenAt: timestamp('last_seen_at', { withTimezone: true }),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  userIdx: index('clients_user_idx').on(table.userId)
-}));
+export const clients = pgTable(
+  'clients',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    kind: text('kind').notNull(),
+    name: text('name').notNull(),
+    publicKey: text('public_key'),
+    lastSeenAt: timestamp('last_seen_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    userIdx: index('clients_user_idx').on(table.userId),
+  }),
+);
 
-export const delegations = pgTable('delegations', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id),
-  clientId: uuid('client_id').notNull().references(() => clients.id),
-  provider: providerEnum('provider').notNull(),
-  resource: text('resource').notNull(),
-  scopes: jsonb('scopes').$type<string[]>().notNull().default([]),
-  reason: text('reason').notNull(),
-  workflowId: text('workflow_id'),
-  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
-  approvedAt: timestamp('approved_at', { withTimezone: true }),
-  revokedAt: timestamp('revoked_at', { withTimezone: true }),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  userClientIdx: index('delegations_user_client_idx').on(table.userId, table.clientId),
-  expiresIdx: index('delegations_expires_idx').on(table.expiresAt)
-}));
+export const delegations = pgTable(
+  'delegations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    clientId: uuid('client_id')
+      .notNull()
+      .references(() => clients.id),
+    provider: providerEnum('provider').notNull(),
+    resource: text('resource').notNull(),
+    scopes: jsonb('scopes').$type<string[]>().notNull().default([]),
+    reason: text('reason').notNull(),
+    workflowId: text('workflow_id'),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    approvedAt: timestamp('approved_at', { withTimezone: true }),
+    revokedAt: timestamp('revoked_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    userClientIdx: index('delegations_user_client_idx').on(table.userId, table.clientId),
+    expiresIdx: index('delegations_expires_idx').on(table.expiresAt),
+  }),
+);
 
-export const sources = pgTable('sources', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
-  provider: providerEnum('provider').notNull(),
-  externalId: text('external_id').notNull(),
-  name: text('name').notNull(),
-  url: text('url'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  workspaceProviderIdx: index('sources_workspace_provider_idx').on(table.workspaceId, table.provider),
-  sourceUnique: uniqueIndex('sources_provider_external_unique').on(table.provider, table.externalId)
-}));
+export const sources = pgTable(
+  'sources',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspaces.id),
+    provider: providerEnum('provider').notNull(),
+    externalId: text('external_id').notNull(),
+    name: text('name').notNull(),
+    url: text('url'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    workspaceProviderIdx: index('sources_workspace_provider_idx').on(
+      table.workspaceId,
+      table.provider,
+    ),
+    sourceUnique: uniqueIndex('sources_provider_external_unique').on(
+      table.provider,
+      table.externalId,
+    ),
+  }),
+);
 
-export const schemaSnapshots = pgTable('schema_snapshots', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
-  sourceId: uuid('source_id').references(() => sources.id),
-  name: text('name').notNull(),
-  graph: jsonb('graph').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  workspaceCreatedIdx: index('schema_snapshots_workspace_created_idx').on(table.workspaceId, table.createdAt)
-}));
+export const schemaSnapshots = pgTable(
+  'schema_snapshots',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspaces.id),
+    sourceId: uuid('source_id').references(() => sources.id),
+    name: text('name').notNull(),
+    graph: jsonb('graph').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    workspaceCreatedIdx: index('schema_snapshots_workspace_created_idx').on(
+      table.workspaceId,
+      table.createdAt,
+    ),
+  }),
+);
 
-export const capabilitySnapshots = pgTable('capability_snapshots', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
-  sourceId: uuid('source_id').references(() => sources.id),
-  capabilities: jsonb('capabilities').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  workspaceCreatedIdx: index('capability_snapshots_workspace_created_idx').on(table.workspaceId, table.createdAt)
-}));
+export const capabilitySnapshots = pgTable(
+  'capability_snapshots',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspaces.id),
+    sourceId: uuid('source_id').references(() => sources.id),
+    capabilities: jsonb('capabilities').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    workspaceCreatedIdx: index('capability_snapshots_workspace_created_idx').on(
+      table.workspaceId,
+      table.createdAt,
+    ),
+  }),
+);
 
-export const auditEvents = pgTable('audit_events', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id').notNull().references(() => workspaces.id),
-  userId: uuid('user_id').references(() => users.id),
-  clientId: uuid('client_id').references(() => clients.id),
-  workflowId: text('workflow_id'),
-  actorType: text('actor_type').notNull(),
-  actorId: text('actor_id').notNull(),
-  action: text('action').notNull(),
-  provider: providerEnum('provider'),
-  resource: text('resource'),
-  riskLabel: text('risk_label').notNull(),
-  policyResult: policyResultEnum('policy_result').notNull(),
-  result: text('result').notNull(),
-  metadata: jsonb('metadata').$type<Record<string, unknown>>().notNull().default({}),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => ({
-  workspaceCreatedIdx: index('audit_events_workspace_created_idx').on(table.workspaceId, table.createdAt),
-  actorIdx: index('audit_events_actor_idx').on(table.actorType, table.actorId)
-}));
+export const auditEvents = pgTable(
+  'audit_events',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspaces.id),
+    userId: uuid('user_id').references(() => users.id),
+    clientId: uuid('client_id').references(() => clients.id),
+    workflowId: text('workflow_id'),
+    actorType: text('actor_type').notNull(),
+    actorId: text('actor_id').notNull(),
+    action: text('action').notNull(),
+    provider: providerEnum('provider'),
+    resource: text('resource'),
+    riskLabel: text('risk_label').notNull(),
+    policyResult: policyResultEnum('policy_result').notNull(),
+    result: text('result').notNull(),
+    metadata: jsonb('metadata').$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    workspaceCreatedIdx: index('audit_events_workspace_created_idx').on(
+      table.workspaceId,
+      table.createdAt,
+    ),
+    actorIdx: index('audit_events_actor_idx').on(table.actorType, table.actorId),
+  }),
+);
 ```
 
 - [ ] **Step 4: Add database client**
@@ -974,6 +1060,7 @@ git commit -m "feat: add foundation database schema"
 ### Task 5: TSH-73 - Implement Auth, Connection Vault, And Delegation Domain Primitives
 
 **Files:**
+
 - Create: `packages/auth/src/types.ts`
 - Create: `packages/auth/src/vault.ts`
 - Create: `packages/auth/src/delegation.ts`
@@ -1094,7 +1181,7 @@ export function createDelegationGrant(input: DelegationRequest, now = new Date()
   return {
     ...input,
     id: crypto.randomUUID(),
-    expiresAt: new Date(now.getTime() + input.ttlSeconds * 1000)
+    expiresAt: new Date(now.getTime() + input.ttlSeconds * 1000),
   };
 }
 ```
@@ -1149,7 +1236,7 @@ const user: HubUser = {
   id: 'user_1',
   workspaceId: 'workspace_1',
   displayName: 'Michael',
-  primaryIdentityProvider: 'local'
+  primaryIdentityProvider: 'local',
 };
 
 const githubIdentity: ExternalIdentity = {
@@ -1158,16 +1245,20 @@ const githubIdentity: ExternalIdentity = {
   provider: 'github',
   providerSubjectId: '123',
   email: 'michael@example.com',
-  isPrimaryLogin: true
+  isPrimaryLogin: true,
 };
 
 describe('setPrimaryIdentityProvider', () => {
   it('sets a linked provider as primary login', () => {
-    expect(setPrimaryIdentityProvider(user, [githubIdentity], 'github').primaryIdentityProvider).toBe('github');
+    expect(
+      setPrimaryIdentityProvider(user, [githubIdentity], 'github').primaryIdentityProvider,
+    ).toBe('github');
   });
 
   it('rejects an unlinked provider', () => {
-    expect(() => setPrimaryIdentityProvider(user, [], 'github')).toThrow('Cannot set unlinked provider github as primary login');
+    expect(() => setPrimaryIdentityProvider(user, [], 'github')).toThrow(
+      'Cannot set unlinked provider github as primary login',
+    );
   });
 });
 ```
@@ -1209,7 +1300,7 @@ describe('createDelegationGrant', () => {
         resource: 'repo:mjshuff23/example',
         scopes: ['repo:read'],
         reason: 'Read schema files',
-        ttlSeconds: 60
+        ttlSeconds: 60,
       },
       now,
     );
@@ -1226,7 +1317,7 @@ describe('createDelegationGrant', () => {
         resource: 'repo:mjshuff23/example',
         scopes: ['repo:read'],
         reason: 'Read schema files',
-        ttlSeconds: 0
+        ttlSeconds: 0,
       }),
     ).toThrow('Delegation ttlSeconds must be positive');
   });
@@ -1256,6 +1347,7 @@ git commit -m "feat: add identity and delegation primitives"
 ### Task 6: TSH-74 - Implement Policy Engine MVP And Audit Write Path
 
 **Files:**
+
 - Create: `packages/auth/src/policy.ts`
 - Create: `packages/auth/src/policy.test.ts`
 - Create: `packages/persistence/src/audit-repository.ts`
@@ -1339,7 +1431,7 @@ describe('evaluatePolicy', () => {
         action: 'read_gateway_status',
         riskLabels: ['read_only'],
         requestedScopes: ['gateway:read'],
-        grantedScopes: ['gateway:read']
+        grantedScopes: ['gateway:read'],
       }).result,
     ).toBe('allow');
   });
@@ -1351,7 +1443,7 @@ describe('evaluatePolicy', () => {
         action: 'read_gateway_status',
         riskLabels: ['read_only'],
         requestedScopes: ['gateway:read'],
-        grantedScopes: []
+        grantedScopes: [],
       }),
     ).toEqual({ result: 'deny', reason: 'Missing granted scope gateway:read' });
   });
@@ -1363,7 +1455,7 @@ describe('evaluatePolicy', () => {
         action: 'delete_table',
         riskLabels: ['destructive'],
         requestedScopes: ['graph:write'],
-        grantedScopes: ['graph:write']
+        grantedScopes: ['graph:write'],
       }).result,
     ).toBe('approval_required');
   });
@@ -1375,7 +1467,7 @@ describe('evaluatePolicy', () => {
         action: 'read_refresh_token',
         riskLabels: ['credential_touching'],
         requestedScopes: ['credential:read'],
-        grantedScopes: ['credential:read']
+        grantedScopes: ['credential:read'],
       }).result,
     ).toBe('deny');
   });
@@ -1446,7 +1538,7 @@ describe('InMemoryAuditRepository', () => {
       action: 'read_gateway_status',
       riskLabel: 'read_only',
       policyResult: 'allow',
-      result: 'success'
+      result: 'success',
     });
 
     expect(repo.events).toHaveLength(1);
@@ -1479,6 +1571,7 @@ git commit -m "feat: add policy and audit primitives"
 ### Task 7: TSH-75 - Implement MCP Gateway Health And Capability Registry Shell
 
 **Files:**
+
 - Create: `packages/connector-sdk/src/capability-registry.ts`
 - Modify: `packages/connector-sdk/src/index.ts`
 - Create: `apps/gateway/src/status.ts`
@@ -1535,7 +1628,11 @@ Update `packages/connector-sdk/src/index.ts`:
 
 ```ts
 export { InMemoryCapabilityRegistry } from './capability-registry';
-export type { CapabilityKind, CapabilityRegistry, CapabilitySnapshotItem } from './capability-registry';
+export type {
+  CapabilityKind,
+  CapabilityRegistry,
+  CapabilitySnapshotItem,
+} from './capability-registry';
 ```
 
 - [ ] **Step 3: Add gateway status model**
@@ -1568,7 +1665,7 @@ export function getGatewayStatus(registry: CapabilityRegistry): GatewayStatus {
     action: 'read_gateway_status',
     riskLabels: ['read_only'],
     requestedScopes: ['gateway:read'],
-    grantedScopes: ['gateway:read']
+    grantedScopes: ['gateway:read'],
   });
 
   if (decision.result !== 'allow') {
@@ -1585,8 +1682,8 @@ export function getGatewayStatus(registry: CapabilityRegistry): GatewayStatus {
       prompts: registry.list('prompt').length,
       completions: registry.list('completion').length,
       tasks: registry.list('task').length,
-      policies: registry.list('policy').length
-    }
+      policies: registry.list('policy').length,
+    },
   };
 }
 ```
@@ -1613,12 +1710,12 @@ registry.upsert({
   title: 'Gateway Status',
   description: 'Current gateway health and capability counts',
   riskLabels: ['read_only'],
-  discoveredAt: new Date().toISOString()
+  discoveredAt: new Date().toISOString(),
 });
 
 const mcpServer = new McpServer({
   name: 'mcp-native-gateway-schema-workbench',
-  version: env.WORKBENCH_VERSION
+  version: env.WORKBENCH_VERSION,
 });
 
 mcpServer.registerResource(
@@ -1627,16 +1724,16 @@ mcpServer.registerResource(
   {
     title: 'Gateway Status',
     description: 'Current gateway health and capability counts',
-    mimeType: 'application/json'
+    mimeType: 'application/json',
   },
   async (uri) => ({
     contents: [
       {
         uri: uri.href,
         mimeType: 'application/json',
-        text: JSON.stringify(getGatewayStatus(registry), null, 2)
-      }
-    ]
+        text: JSON.stringify(getGatewayStatus(registry), null, 2),
+      },
+    ],
   }),
 );
 
@@ -1677,7 +1774,7 @@ describe('getGatewayStatus', () => {
       title: 'Gateway Status',
       description: 'Current gateway health and capability counts',
       riskLabels: ['read_only'],
-      discoveredAt: '2026-05-09T00:00:00.000Z'
+      discoveredAt: '2026-05-09T00:00:00.000Z',
     });
 
     expect(getGatewayStatus(registry)).toMatchObject({
@@ -1685,8 +1782,8 @@ describe('getGatewayStatus', () => {
       capabilities: {
         resources: 1,
         tools: 0,
-        prompts: 0
-      }
+        prompts: 0,
+      },
     });
   });
 });
@@ -1722,6 +1819,7 @@ git commit -m "feat: add gateway status shell"
 ### Task 8: TSH-76 - Wire Verification, CI Skeleton, And Handoff Docs
 
 **Files:**
+
 - Create: `.github/workflows/verify.yml`
 - Modify: `README.md`
 - Modify: `AGENTS.md`
@@ -1794,7 +1892,7 @@ jobs:
 
 Add this section to `README.md`:
 
-```md
+````md
 ## Phase 1 Local Commands
 
 ```bash
@@ -1805,13 +1903,15 @@ pnpm db:migrate
 pnpm verify
 pnpm --filter @workbench/gateway dev
 ```
+````
 
 Gateway health check:
 
 ```bash
 curl http://localhost:4200/healthz
 ```
-```
+
+````
 
 - [ ] **Step 3: Update AGENTS handoff**
 
@@ -1825,13 +1925,13 @@ Add this section to `AGENTS.md`:
 - Use `pnpm verify` before claiming completion.
 - Do not add real provider OAuth, React Flow, tldraw, 3D, or live provider sync in Phase 1.
 - Move `TSH-64` to `In Review` only after all child tickets are complete or explicitly deferred in `docs/development/phase-1-handoff.md`.
-```
+````
 
 - [ ] **Step 4: Add Phase 1 handoff doc**
 
 Create `docs/development/phase-1-handoff.md`:
 
-```md
+````md
 # Phase 1 Handoff
 
 ## Implemented Boundaries
@@ -1853,6 +1953,7 @@ pnpm db:migrate
 pnpm verify
 curl http://localhost:4200/healthz
 ```
+````
 
 ## Intentionally Deferred
 
@@ -1870,7 +1971,8 @@ curl http://localhost:4200/healthz
 - Parent Linear ticket: TSH-64
 - Child Linear tickets: TSH-69 through TSH-76
 - GitHub issue: https://github.com/mjshuff23/mcp-native-gateway-schema-workbench-/issues/1
-```
+
+````
 
 - [ ] **Step 5: Run final verification**
 
@@ -1880,7 +1982,7 @@ Run:
 pnpm format
 pnpm verify
 git status --short
-```
+````
 
 Expected: `pnpm verify` passes and `git status --short` only shows intentional files before commit.
 
@@ -1914,7 +2016,7 @@ Phase 1: scaffold foundation contracts and gateway shell
 
 ## Suggested Draft PR Body
 
-```md
+````md
 ## Summary
 
 - Scaffolds the pnpm/Nx TypeScript workspace.
@@ -1942,6 +2044,7 @@ pnpm db:migrate
 pnpm verify
 curl http://localhost:4200/healthz
 ```
+````
 
 ## Deferred Scope
 
@@ -1950,4 +2053,7 @@ curl http://localhost:4200/healthz
 - React Flow workbench.
 - tldraw workspace.
 - 3D exploration.
+
+```
+
 ```
